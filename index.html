@@ -442,55 +442,6 @@
             50% { transform: scale(1.05); }
         }
         
-        /* XP Bar */
-        .xp-bar {
-            background: rgba(59, 130, 246, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .xp-fill {
-            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
-            height: 100%;
-            transition: width 0.5s ease;
-            position: relative;
-        }
-        
-        .xp-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: xpShimmer 2s ease-in-out infinite;
-        }
-        
-        @keyframes xpShimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-        
-        /* Theme toggle */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            padding: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-        
         /* Explanation box */
         .explanation-box {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 197, 94, 0.1));
@@ -531,27 +482,30 @@
             border-color: var(--primary-blue);
         }
         
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
         /* Responsive design */
         @media (max-width: 768px) {
             .timer-circle { width: 60px; height: 60px; }
             .timer-text { font-size: 18px; }
             .seismic-logo { width: 60px; height: 60px; }
             .seismic-logo::before { font-size: 24px; }
-        }
-        
-        /* Print styles */
-        @media print {
-            body { background: white; color: black; }
-            .particles, .modern-card::before, body::before { display: none; }
-            .modern-card { border: 1px solid #ccc; box-shadow: none; }
-        }
-        
-        /* High contrast mode */
-        @media (prefers-contrast: high) {
-            :root {
-                --border-color: #ffffff;
-                --text-secondary: #ffffff;
-            }
         }
         
         /* Reduced motion */
@@ -597,11 +551,6 @@
                 </div>
                 <div class="flex items-center space-x-4 text-sm">
                     <div class="text-gray-300">Best: <span id="bestScore" class="text-green-400">0</span></div>
-                    <div class="text-gray-300">Level: <span id="userLevel" class="text-purple-400">1</span></div>
-                    <div class="text-gray-300">XP: <span id="userXP" class="text-yellow-400">0</span></div>
-                </div>
-                <div class="xp-bar w-32 h-2 mt-2">
-                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
                 </div>
             </div>
         </div>
@@ -623,7 +572,7 @@
                         <span class="text-3xl">⭐</span>
                     </div>
                     <p class="text-gray-300 mb-4">Complete today's challenge for bonus XP!</p>
-                    <div class="text-sm text-gray-400">Theme: <span class="text-blue-400" id="dailyTheme">Funding & Investment</span></div>
+                    <div class="text-sm text-gray-400">Theme: <span class="text-blue-400" id="dailyTheme">General</span></div>
                 </div>
                 
                 <div class="grid md:grid-cols-4 gap-6 mb-12">
@@ -869,7 +818,7 @@
                     </div>
                     <div class="feature-card p-6 rounded-2xl">
                         <div class="text-4xl font-black text-yellow-400" id="xpEarned">0</div>
-                        <div class="text-gray-300 text-lg">XP Earned</div>
+                        <div class="text-gray-300 text-lg">Total Points</div>
                     </div>
                 </div>
 
@@ -923,7 +872,7 @@
     </main>
 
     <script>
-        // Enhanced questions with categories, difficulty, and explanations
+        // Expanded question database with more variety
         const questions = [
             {
                 question: "What is the primary focus of Seismic, the project behind @SeismicSys?",
@@ -1014,10 +963,145 @@
                 explanation: "During Seismic's beta phase, over 3,000 encrypted contracts were deployed, demonstrating significant developer interest and testing of the platform's capabilities.",
                 category: "Timeline",
                 difficulty: "medium"
+            },
+            {
+                question: "What type of blockchain architecture does Seismic use?",
+                options: ["Layer 2 rollup", "Layer 1 blockchain", "Sidechain", "State channel"],
+                correct: 1,
+                hint: "It's a foundational blockchain layer.",
+                explanation: "Seismic operates as a Layer 1 blockchain, providing the foundational infrastructure for encrypted transactions and smart contracts.",
+                category: "Technology",
+                difficulty: "easy"
+            },
+            {
+                question: "What is the main advantage of encrypted smart contracts on Seismic?",
+                options: ["Faster execution", "Lower gas fees", "Privacy protection", "Better scalability"],
+                correct: 2,
+                hint: "Think about what encryption provides.",
+                explanation: "The main advantage of encrypted smart contracts is privacy protection, allowing sensitive financial data to remain confidential while still being verifiable.",
+                category: "Technology",
+                difficulty: "easy"
+            },
+            {
+                question: "Which programming language is enhanced for Seismic's encrypted contracts?",
+                options: ["Rust", "Solidity", "JavaScript", "Python"],
+                correct: 1,
+                hint: "It's the most popular smart contract language.",
+                explanation: "Solidity has been enhanced with encrypted types as first-class citizens, making it easier for developers to write privacy-preserving smart contracts.",
+                category: "Technology",
+                difficulty: "medium"
+            },
+            {
+                question: "What makes Seismic different from traditional DeFi platforms?",
+                options: ["Higher yields", "Faster transactions", "Built-in privacy", "Lower fees"],
+                correct: 2,
+                hint: "Focus on the core differentiator mentioned in their description.",
+                explanation: "Seismic's key differentiator is built-in privacy through encryption, allowing DeFi applications to protect user data while maintaining functionality.",
+                category: "General",
+                difficulty: "easy"
+            },
+            {
+                question: "What consensus mechanism does Seismic's Summit client support?",
+                options: ["Proof of Work", "Proof of Stake", "Delegated Proof of Stake", "EVM-compatible consensus"],
+                correct: 3,
+                hint: "It's designed to work with Ethereum-compatible systems.",
+                explanation: "Summit is designed as an EVM-compatible consensus engine, allowing it to work with Ethereum-style smart contracts and applications.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "What is the target block time for Seismic's Summit consensus client?",
+                options: ["1 second", "Sub-second", "5 seconds", "15 seconds"],
+                correct: 1,
+                hint: "It's faster than one second.",
+                explanation: "Summit is designed to achieve sub-second block times, providing very fast transaction confirmation for users.",
+                category: "Technology",
+                difficulty: "medium"
+            },
+            {
+                question: "Which venture capital firm is known for leading Seismic's funding?",
+                options: ["Sequoia Capital", "a16z crypto", "Binance Labs", "Coinbase Ventures"],
+                correct: 1,
+                hint: "It's a well-known crypto-focused VC firm.",
+                explanation: "a16z crypto (Andreessen Horowitz crypto) is the prominent venture capital firm that led Seismic's seed funding round.",
+                category: "Funding",
+                difficulty: "easy"
+            },
+            {
+                question: "What year was Seismic's major funding announcement made?",
+                options: ["2024", "2025", "2026", "2023"],
+                correct: 1,
+                hint: "It's the current year in the context.",
+                explanation: "Seismic's $7M seed funding was announced in 2025, specifically on March 6, 2025.",
+                category: "Timeline",
+                difficulty: "easy"
+            },
+            {
+                question: "What is the primary use case for encrypted blockchains in traditional finance?",
+                options: ["Gaming", "Social media", "Loans and insurance", "Art trading"],
+                correct: 2,
+                hint: "Think about financial services that require privacy.",
+                explanation: "Encrypted blockchains like Seismic are particularly valuable for traditional financial services like loans and insurance, where privacy is essential.",
+                category: "General",
+                difficulty: "medium"
+            },
+            {
+                question: "What does the 'encrypted types as first-class citizens' feature enable?",
+                options: ["Faster compilation", "Native privacy in smart contracts", "Lower gas costs", "Better debugging"],
+                correct: 1,
+                hint: "It's about making privacy development easier.",
+                explanation: "This feature allows developers to use encrypted data types directly in Solidity without external libraries, making privacy-preserving smart contract development more accessible.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "How does Seismic maintain compatibility with existing Ethereum tools?",
+                options: ["Custom APIs", "EVM compatibility", "Bridge protocols", "Wrapper contracts"],
+                correct: 1,
+                hint: "It uses the same virtual machine standard.",
+                explanation: "Seismic maintains EVM compatibility, allowing existing Ethereum tools, wallets, and applications to work with the Seismic blockchain.",
+                category: "Technology",
+                difficulty: "medium"
+            },
+            {
+                question: "What is the significance of open-sourcing the Summit consensus client?",
+                options: ["Faster development", "Community adoption", "Regulatory compliance", "Cost reduction"],
+                correct: 1,
+                hint: "Think about what open-source enables for the community.",
+                explanation: "Open-sourcing Summit allows the broader blockchain community to adopt, contribute to, and build upon Seismic's consensus technology.",
+                category: "General",
+                difficulty: "medium"
+            },
+            {
+                question: "What type of financial services benefit most from blockchain encryption?",
+                options: ["Public trading", "Confidential transactions", "Open auctions", "Public voting"],
+                correct: 1,
+                hint: "Think about services that need privacy.",
+                explanation: "Confidential transactions in services like private lending, insurance claims, and personal financial management benefit most from blockchain encryption.",
+                category: "General",
+                difficulty: "easy"
+            },
+            {
+                question: "What makes Summit different from other consensus clients?",
+                options: ["Written in Python", "Turnkey solution with sub-second blocks", "Uses Proof of Work", "Requires custom hardware"],
+                correct: 1,
+                hint: "Focus on its ease of use and performance characteristics.",
+                explanation: "Summit is designed as a turnkey, fast consensus engine that achieves sub-second block times, making it easy to deploy and very performant.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "What does 'turnkey' mean in the context of Summit consensus client?",
+                options: ["Requires assembly", "Ready to use out of the box", "Needs customization", "Manual configuration required"],
+                correct: 1,
+                hint: "Think about ease of deployment.",
+                explanation: "Turnkey means Summit is ready to use immediately without requiring complex setup or configuration, making blockchain deployment easier.",
+                category: "Technology",
+                difficulty: "medium"
             }
         ];
 
-        // Enhanced quiz state - FIXED INITIALIZATION
+        // Enhanced quiz state
         let currentQuestion = 0;
         let score = 0;
         let answers = [];
@@ -1033,10 +1117,6 @@
         let questionTimes = [];
         let currentTheme = localStorage.getItem('seismicTheme') || 'dark';
 
-        // FIXED: Proper initialization of XP and Level
-        let userXP = parseInt(localStorage.getItem('seismicXP') || '0');
-        let userLevel = parseInt(localStorage.getItem('seismicLevel') || '1');
-
         // Achievement system
         const achievements = {
             firstQuiz: { name: "First Steps", desc: "Complete your first quiz", icon: "🎯", unlocked: false },
@@ -1045,8 +1125,7 @@
             streakMaster: { name: "Streak Master", desc: "Get 5 correct answers in a row", icon: "🔥", unlocked: false },
             bookworm: { name: "Bookworm", desc: "Use hints on 10 questions", icon: "📚", unlocked: false },
             explorer: { name: "Explorer", desc: "Try all quiz modes", icon: "🗺️", unlocked: false },
-            dedicated: { name: "Dedicated", desc: "Complete 10 quizzes", icon: "🏆", unlocked: false },
-            scholar: { name: "Scholar", desc: "Reach level 5", icon: "🎓", unlocked: false }
+            dedicated: { name: "Dedicated", desc: "Complete 10 quizzes", icon: "🏆", unlocked: false }
         };
 
         // Load saved achievements
@@ -1105,40 +1184,6 @@
             document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
         }
 
-        // FIXED: XP and leveling system
-        function addXP(amount) {
-            userXP += amount;
-            const newLevel = Math.floor(userXP / 100) + 1;
-            
-            if (newLevel > userLevel) {
-                userLevel = newLevel;
-                showAchievement("Level Up!", `You reached level ${userLevel}!`, "🆙");
-                
-                if (userLevel >= 5) {
-                    unlockAchievement('scholar');
-                }
-                
-                // Save the new level immediately
-                localStorage.setItem('seismicLevel', userLevel.toString());
-            }
-            
-            updateXPDisplay();
-            localStorage.setItem('seismicXP', userXP.toString());
-        }
-
-        function updateXPDisplay() {
-            document.getElementById('userXP').textContent = userXP;
-            document.getElementById('userLevel').textContent = userLevel;
-            
-            const currentLevelXP = (userLevel - 1) * 100;
-            const nextLevelXP = userLevel * 100;
-            const progress = ((userXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
-            
-            // Ensure progress is between 0 and 100
-            const clampedProgress = Math.max(0, Math.min(100, progress));
-            document.getElementById('xpFill').style.width = clampedProgress + '%';
-        }
-
         // Achievement system
         function unlockAchievement(achievementKey) {
             if (!achievements[achievementKey].unlocked) {
@@ -1149,7 +1194,6 @@
                     achievements[achievementKey].icon
                 );
                 saveAchievements();
-                addXP(50); // Bonus XP for achievements
             }
         }
 
@@ -1246,19 +1290,34 @@
         function selectRandomQuestions() {
             let selectedQuestions;
             
+            // Get previously used questions to avoid repetition
+            const usedQuestions = JSON.parse(localStorage.getItem('seismicUsedQuestions') || '[]');
+            const availableQuestions = questions.filter((_, index) => !usedQuestions.includes(index));
+            
             if (quizMode === 'challenge') {
                 // Daily challenge - filter by today's theme
                 const dailyTheme = getDailyTheme();
-                selectedQuestions = questions.filter(q => q.category === dailyTheme);
+                selectedQuestions = availableQuestions.filter(q => q.category === dailyTheme);
                 if (selectedQuestions.length < 10) {
-                    selectedQuestions = [...selectedQuestions, ...questions.filter(q => q.category !== dailyTheme)];
+                    selectedQuestions = [...selectedQuestions, ...availableQuestions.filter(q => q.category !== dailyTheme)];
                 }
             } else {
+                selectedQuestions = [...availableQuestions];
+            }
+            
+            // If we don't have enough unused questions, reset the pool
+            if (selectedQuestions.length < 10) {
                 selectedQuestions = [...questions];
+                localStorage.setItem('seismicUsedQuestions', '[]');
             }
             
             const shuffled = shuffleArray(selectedQuestions);
             const selected = shuffled.slice(0, 10);
+            
+            // Track which questions were used
+            const selectedIndices = selected.map(q => questions.indexOf(q));
+            const newUsedQuestions = [...usedQuestions, ...selectedIndices];
+            localStorage.setItem('seismicUsedQuestions', JSON.stringify(newUsedQuestions));
             
             return selected.map(question => {
                 const originalOptions = [...question.options];
@@ -1467,11 +1526,10 @@
                 score += 10;
                 streak++;
                 createSuccessParticles(buttonElement);
-                addXP(10);
                 
                 // Speed bonus
                 if (answerTime < 3) {
-                    addXP(5);
+                    score += 5; // Speed bonus points
                     const fastAnswers = questionTimes.filter(q => q.time && q.time < 3).length;
                     if (fastAnswers >= 5) {
                         unlockAchievement('speedDemon');
@@ -1646,11 +1704,11 @@
             
             // Simulated leaderboard data
             const leaderboardData = [
-                { name: "CryptoMaster", score: 100, level: 8 },
-                { name: "BlockchainPro", score: 95, level: 7 },
-                { name: "DeFiExpert", score: 90, level: 6 },
-                { name: "You", score: parseInt(localStorage.getItem('seismicBestScore') || '0'), level: userLevel },
-                { name: "PrivacyFan", score: 85, level: 5 },
+                { name: "CryptoMaster", score: 100 },
+                { name: "BlockchainPro", score: 95 },
+                { name: "DeFiExpert", score: 90 },
+                { name: "You", score: parseInt(localStorage.getItem('seismicBestScore') || '0') },
+                { name: "PrivacyFan", score: 85 },
             ];
             
             // Sort by score
@@ -1665,7 +1723,7 @@
                     <div class="text-2xl font-bold text-gray-400 mr-4">#${index + 1}</div>
                     <div class="flex-1">
                         <div class="font-bold text-white">${entry.name}</div>
-                        <div class="text-sm text-gray-300">Level ${entry.level}</div>
+                        <div class="text-sm text-gray-300">Privacy Expert</div>
                     </div>
                     <div class="text-xl font-bold text-blue-400">${entry.score}</div>
                 `;
@@ -1786,7 +1844,6 @@
         }
 
         function reviewAnswers() {
-            // This would show a detailed review of all answers
             alert('Review feature would show all questions with your answers, correct answers, and explanations.');
         }
 
@@ -1802,32 +1859,29 @@
             });
             
             const accuracy = Math.round((correctCount / 10) * 100);
-            const finalScore = correctCount * 10;
-            const xpEarned = finalScore + (streak * 5);
+            const finalScore = score; // Use actual score including speed bonuses
             
             // Update best score
-            const bestScore = localStorage.getItem('seismicQuizBest') || 0;
+            const bestScore = localStorage.getItem('seismicBestScore') || 0;
             if (finalScore > bestScore) {
-                localStorage.setItem('seismicQuizBest', finalScore);
+                localStorage.setItem('seismicBestScore', finalScore);
                 document.getElementById('bestScore').textContent = finalScore;
             }
             
-            // Add XP
-            addXP(xpEarned);
+            // Update quiz count
+            const quizCount = parseInt(localStorage.getItem('seismicQuizCount') || '0') + 1;
+            localStorage.setItem('seismicQuizCount', quizCount.toString());
             
             // Check achievements
             if (accuracy === 100) {
                 unlockAchievement('perfectScore');
             }
             
-            const quizzesCompleted = parseInt(localStorage.getItem('seismicQuizzesCompleted') || '0') + 1;
-            localStorage.setItem('seismicQuizzesCompleted', quizzesCompleted.toString());
-            
-            if (quizzesCompleted === 1) {
+            if (quizCount === 1) {
                 unlockAchievement('firstQuiz');
             }
             
-            if (quizzesCompleted >= 10) {
+            if (quizCount >= 10) {
                 unlockAchievement('dedicated');
             }
             
@@ -1838,7 +1892,7 @@
             document.getElementById('finalScore').textContent = finalScore;
             document.getElementById('correctAnswers').textContent = `${correctCount} / 10`;
             document.getElementById('accuracy').textContent = accuracy + '%';
-            document.getElementById('xpEarned').textContent = xpEarned;
+            document.getElementById('xpEarned').textContent = finalScore;
             
             // Performance message
             let message, details;
@@ -1896,7 +1950,6 @@
                     <p style="font-size: 1.2rem; margin-bottom: 1rem;">This certifies that you have successfully completed</p>
                     <p style="font-size: 1.2rem; margin-bottom: 1rem;">the Seismic Encrypted Blockchain Knowledge Test</p>
                     <p style="font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 2rem 0;">Score: ${correctCount}/10 (${accuracy}%)</p>
-                    <p style="font-size: 1rem; color: #6b7280;">Level: ${userLevel} | XP: ${userXP}</p>
                     <p style="font-size: 0.9rem; color: #6b7280; margin-top: 2rem;">Date: ${new Date().toLocaleDateString()}</p>
                 </div>
             `;
@@ -1911,7 +1964,7 @@
         function shareOnTwitter() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `I just scored ${correctCount}/10 (${accuracy}%) on the Seismic Privacy Quiz! 🔐 Level ${userLevel} with ${userXP} XP. Test your knowledge of encrypted blockchain technology! #Seismic #Privacy #Blockchain #DeFi`;
+            const text = `I just scored ${correctCount}/10 (${accuracy}%) on the Seismic Privacy Quiz! 🔐 ${score} points earned. Test your knowledge of encrypted blockchain technology! #Seismic #Privacy #Blockchain #DeFi`;
             const url = window.location.href;
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
         }
@@ -1919,7 +1972,7 @@
         function shareOnLinkedIn() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `I just completed the Seismic Privacy Quiz and scored ${correctCount}/10 (${accuracy}%)! Great way to test knowledge about encrypted blockchain technology and Layer 1 privacy solutions. Currently at Level ${userLevel}!`;
+            const text = `I just completed the Seismic Privacy Quiz and scored ${correctCount}/10 (${accuracy}%) with ${score} points! Great way to test knowledge about encrypted blockchain technology and Layer 1 privacy solutions.`;
             const url = window.location.href;
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`, '_blank');
         }
@@ -1927,7 +1980,7 @@
         function copyShareLink() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `Check out this Seismic Privacy Quiz! I scored ${correctCount}/10 (${accuracy}%) and reached Level ${userLevel}. Test your knowledge: ${window.location.href}`;
+            const text = `Check out this Seismic Privacy Quiz! I scored ${correctCount}/10 (${accuracy}%) with ${score} points. Test your knowledge: ${window.location.href}`;
             
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
@@ -1950,67 +2003,18 @@
             alert('Challenge link copied! Send it to your friends! ⚔️');
         }
 
-        // Auto-save progress
-        function saveProgress() {
-            const progress = {
-                currentQuestion,
-                answers,
-                score,
-                streak,
-                bookmarkedQuestions: Array.from(bookmarkedQuestions),
-                favoriteQuestions: Array.from(favoriteQuestions),
-                quizMode,
-                timeStarted
-            };
-            localStorage.setItem('seismicQuizProgress', JSON.stringify(progress));
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem('seismicQuizProgress');
-            if (saved) {
-                const progress = JSON.parse(saved);
-                // Only load if quiz was started recently (within 1 hour)
-                if (progress.timeStarted && (Date.now() - new Date(progress.timeStarted).getTime()) < 3600000) {
-                    return progress;
-                }
-            }
-            return null;
-        }
-
         // Initialize on page load
         window.onload = function() {
             createParticles();
             initializeTheme();
-            updateXPDisplay();
             
-            const bestScore = localStorage.getItem('seismicQuizBest') || 0;
+            // Initialize display
+            const bestScore = localStorage.getItem('seismicBestScore') || 0;
             document.getElementById('bestScore').textContent = bestScore;
             
             // Set daily theme
             document.getElementById('dailyTheme').textContent = getDailyTheme();
-            
-            // Load progress if available
-            const savedProgress = loadProgress();
-            if (savedProgress && confirm('Resume your previous quiz?')) {
-                // Restore progress
-                currentQuestion = savedProgress.currentQuestion;
-                answers = savedProgress.answers;
-                score = savedProgress.score;
-                streak = savedProgress.streak;
-                bookmarkedQuestions = new Set(savedProgress.bookmarkedQuestions);
-                favoriteQuestions = new Set(savedProgress.favoriteQuestions);
-                quizMode = savedProgress.quizMode;
-                
-                startQuiz(quizMode);
-            }
         };
-
-        // Auto-save every 30 seconds during quiz
-        setInterval(() => {
-            if (!document.getElementById('quizInterface').classList.contains('hidden')) {
-                saveProgress();
-            }
-        }, 30000);
 
         // Close modals when clicking outside
         document.addEventListener('click', (e) => {
@@ -2018,13 +2022,6 @@
                 e.target.classList.add('hidden');
             }
         });
-
-        // Offline support
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {
-                // Service worker registration failed, but app still works
-            });
-        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bc0e20d518a7bb',t:'MTc1NzMwOTQ0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bc30448613a7bb',t:'MTc1NzMxMDgzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
