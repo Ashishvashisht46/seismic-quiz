@@ -598,19 +598,45 @@
                     </div>
                 </div>
                 
+                <!-- Username Entry -->
+                <div class="modern-card p-8 rounded-2xl mb-8 border-2 border-blue-500/30">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">👤 Enter Your Username</h3>
+                        <p class="text-gray-300">Personalize your quiz experience and track your progress</p>
+                    </div>
+                    <div class="max-w-md mx-auto">
+                        <div class="flex items-center space-x-4">
+                            <input 
+                                type="text" 
+                                id="usernameInput" 
+                                placeholder="Enter your username..." 
+                                maxlength="20"
+                                class="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
+                            >
+                            <button onclick="saveUsername()" class="modern-button px-6 py-3 rounded-xl font-bold">
+                                Save
+                            </button>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <span class="text-sm text-gray-400">Current user: </span>
+                            <span id="currentUsername" class="text-blue-400 font-bold">Guest</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quiz Mode Selection -->
                 <div class="grid md:grid-cols-3 gap-6 mb-8">
-                    <button onclick="startQuiz('normal')" class="modern-button p-6 rounded-2xl text-left">
+                    <button onclick="showQuizModeConfirm('normal')" class="modern-button p-6 rounded-2xl text-left">
                         <div class="text-2xl mb-2">🚀</div>
                         <div class="text-xl font-bold mb-2">Normal Quiz</div>
                         <div class="text-sm opacity-75">Standard 10-question quiz</div>
                     </button>
-                    <button onclick="startQuiz('study')" class="modern-button p-6 rounded-2xl text-left">
+                    <button onclick="showQuizModeConfirm('study')" class="modern-button p-6 rounded-2xl text-left">
                         <div class="text-2xl mb-2">📚</div>
                         <div class="text-xl font-bold mb-2">Study Mode</div>
                         <div class="text-sm opacity-75">No timer, detailed explanations</div>
                     </button>
-                    <button onclick="startQuiz('challenge')" class="modern-button p-6 rounded-2xl text-left">
+                    <button onclick="showQuizModeConfirm('challenge')" class="modern-button p-6 rounded-2xl text-left">
                         <div class="text-2xl mb-2">⚡</div>
                         <div class="text-xl font-bold mb-2">Daily Challenge</div>
                         <div class="text-sm opacity-75">Special themed questions</div>
@@ -794,6 +820,34 @@
                 </div>
                 <div class="mt-6 grid md:grid-cols-3 gap-4" id="analyticsStats">
                     <!-- Stats will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Mode Confirmation Modal -->
+        <div id="quizModeModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50">
+            <div class="modern-card p-8 rounded-3xl max-w-md w-full mx-4">
+                <div class="text-center">
+                    <div class="text-4xl mb-4" id="modeIcon">🚀</div>
+                    <h3 class="text-2xl font-bold text-white mb-4" id="modeTitle">Start Normal Quiz?</h3>
+                    <div class="mb-6">
+                        <p class="text-gray-300 mb-4" id="modeDescription">You're about to start a standard 10-question quiz.</p>
+                        <div class="modern-card p-4 rounded-xl border border-blue-500/30">
+                            <div class="flex items-center justify-center space-x-2 mb-2">
+                                <span class="text-lg">👤</span>
+                                <span class="text-white font-bold">Playing as:</span>
+                            </div>
+                            <div class="text-xl font-bold text-blue-400" id="confirmUsername">Guest</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button onclick="closeQuizModeModal()" class="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition-colors">
+                            Cancel
+                        </button>
+                        <button onclick="confirmStartQuiz()" id="confirmStartBtn" class="flex-1 modern-button px-6 py-3 font-bold rounded-xl">
+                            Start Quiz
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1116,6 +1170,8 @@
         let maxStreak = 0;
         let questionTimes = [];
         let currentTheme = localStorage.getItem('seismicTheme') || 'dark';
+        let selectedQuizMode = 'normal';
+        let currentUsername = localStorage.getItem('seismicUsername') || 'Guest';
 
         // Achievement system
         const achievements = {
@@ -1183,6 +1239,95 @@
             document.body.setAttribute('data-theme', currentTheme);
             document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
         }
+
+        // Username management
+        function saveUsername() {
+            const input = document.getElementById('usernameInput');
+            const username = input.value.trim();
+            
+            if (username === '') {
+                alert('Please enter a valid username!');
+                return;
+            }
+            
+            if (username.length > 20) {
+                alert('Username must be 20 characters or less!');
+                return;
+            }
+            
+            currentUsername = username;
+            localStorage.setItem('seismicUsername', username);
+            updateUsernameDisplay();
+            input.value = '';
+            
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'fixed top-20 right-4 bg-green-600 text-white px-6 py-3 rounded-xl font-bold z-50';
+            successMsg.textContent = `Username saved as "${username}"! 👤`;
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        function updateUsernameDisplay() {
+            document.getElementById('currentUsername').textContent = currentUsername;
+        }
+
+        // Quiz mode confirmation
+        function showQuizModeConfirm(mode) {
+            selectedQuizMode = mode;
+            
+            const modal = document.getElementById('quizModeModal');
+            const modeIcon = document.getElementById('modeIcon');
+            const modeTitle = document.getElementById('modeTitle');
+            const modeDescription = document.getElementById('modeDescription');
+            const confirmUsername = document.getElementById('confirmUsername');
+            
+            // Set mode-specific content
+            switch(mode) {
+                case 'normal':
+                    modeIcon.textContent = '🚀';
+                    modeTitle.textContent = 'Start Normal Quiz?';
+                    modeDescription.textContent = 'You\'re about to start a standard 10-question quiz with a 10-second timer per question.';
+                    break;
+                case 'study':
+                    modeIcon.textContent = '📚';
+                    modeTitle.textContent = 'Start Study Mode?';
+                    modeDescription.textContent = 'You\'re about to start a study mode quiz with no timer and detailed explanations.';
+                    break;
+                case 'challenge':
+                    modeIcon.textContent = '⚡';
+                    modeTitle.textContent = 'Start Daily Challenge?';
+                    modeDescription.textContent = `Today's challenge focuses on ${getDailyTheme()} questions. Extra XP awaits!`;
+                    break;
+            }
+            
+            confirmUsername.textContent = currentUsername;
+            modal.classList.remove('hidden');
+        }
+
+        function closeQuizModeModal() {
+            document.getElementById('quizModeModal').classList.add('hidden');
+        }
+
+        function confirmStartQuiz() {
+            closeQuizModeModal();
+            startQuiz(selectedQuizMode);
+        }
+
+        // Allow Enter key to save username
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('usernameInput');
+            if (usernameInput) {
+                usernameInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveUsername();
+                    }
+                });
+            }
+        });
 
         // Achievement system
         function unlockAchievement(achievementKey) {
@@ -1707,7 +1852,7 @@
                 { name: "CryptoMaster", score: 100 },
                 { name: "BlockchainPro", score: 95 },
                 { name: "DeFiExpert", score: 90 },
-                { name: "You", score: parseInt(localStorage.getItem('seismicBestScore') || '0') },
+                { name: currentUsername, score: parseInt(localStorage.getItem('seismicBestScore') || '0') },
                 { name: "PrivacyFan", score: 85 },
             ];
             
@@ -1718,11 +1863,11 @@
             
             leaderboardData.forEach((entry, index) => {
                 const div = document.createElement('div');
-                div.className = `leaderboard-entry ${entry.name === 'You' ? 'border-blue-500' : ''}`;
+                div.className = `leaderboard-entry ${entry.name === currentUsername ? 'border-blue-500' : ''}`;
                 div.innerHTML = `
                     <div class="text-2xl font-bold text-gray-400 mr-4">#${index + 1}</div>
                     <div class="flex-1">
-                        <div class="font-bold text-white">${entry.name}</div>
+                        <div class="font-bold text-white">${entry.name} ${entry.name === currentUsername ? '(You)' : ''}</div>
                         <div class="text-sm text-gray-300">Privacy Expert</div>
                     </div>
                     <div class="text-xl font-bold text-blue-400">${entry.score}</div>
@@ -1964,7 +2109,7 @@
         function shareOnTwitter() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `I just scored ${correctCount}/10 (${accuracy}%) on the Seismic Privacy Quiz! 🔐 ${score} points earned. Test your knowledge of encrypted blockchain technology! #Seismic #Privacy #Blockchain #DeFi`;
+            const text = `I'm ${currentUsername} and I just scored ${correctCount}/10 (${accuracy}%) on the Seismic Privacy Quiz! 🔐 ${score} points earned. Test your knowledge of encrypted blockchain technology! #Seismic #Privacy #Blockchain #DeFi`;
             const url = window.location.href;
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
         }
@@ -1972,7 +2117,7 @@
         function shareOnLinkedIn() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `I just completed the Seismic Privacy Quiz and scored ${correctCount}/10 (${accuracy}%) with ${score} points! Great way to test knowledge about encrypted blockchain technology and Layer 1 privacy solutions.`;
+            const text = `I'm ${currentUsername} and I just completed the Seismic Privacy Quiz, scoring ${correctCount}/10 (${accuracy}%) with ${score} points! Great way to test knowledge about encrypted blockchain technology and Layer 1 privacy solutions.`;
             const url = window.location.href;
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`, '_blank');
         }
@@ -1980,7 +2125,7 @@
         function copyShareLink() {
             const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
             const accuracy = Math.round((correctCount / 10) * 100);
-            const text = `Check out this Seismic Privacy Quiz! I scored ${correctCount}/10 (${accuracy}%) with ${score} points. Test your knowledge: ${window.location.href}`;
+            const text = `Check out this Seismic Privacy Quiz! ${currentUsername} scored ${correctCount}/10 (${accuracy}%) with ${score} points. Test your knowledge: ${window.location.href}`;
             
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
@@ -1998,7 +2143,7 @@
         }
 
         function challengeFriend() {
-            const challengeText = `I challenge you to beat my score on the Seismic Privacy Quiz! I got ${score} points. Think you can do better? ${window.location.href}`;
+            const challengeText = `I'm ${currentUsername} and I challenge you to beat my score on the Seismic Privacy Quiz! I got ${score} points. Think you can do better? ${window.location.href}`;
             copyShareLink();
             alert('Challenge link copied! Send it to your friends! ⚔️');
         }
@@ -2012,6 +2157,9 @@
             const bestScore = localStorage.getItem('seismicBestScore') || 0;
             document.getElementById('bestScore').textContent = bestScore;
             
+            // Initialize username display
+            updateUsernameDisplay();
+            
             // Set daily theme
             document.getElementById('dailyTheme').textContent = getDailyTheme();
         };
@@ -2023,5 +2171,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bc3a3fe581a7bb',t:'MTc1NzMxMTI0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bc404f6072a7bb',t:'MTc1NzMxMTQ5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
