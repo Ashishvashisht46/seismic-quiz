@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seismic Quiz - Ultimate Privacy Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-bg: #0f0f23;
+            --secondary-bg: #1a1a2e;
+            --accent-bg: #16213e;
+            --primary-blue: #3b82f6;
+            --primary-green: #22c55e;
+            --primary-purple: #a855f7;
+            --text-primary: #ffffff;
+            --text-secondary: #d1d5db;
+            --border-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        [data-theme="light"] {
+            --primary-bg: #f8fafc;
+            --secondary-bg: #ffffff;
+            --accent-bg: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-green: #16a34a;
+            --primary-purple: #9333ea;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: rgba(37, 99, 235, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 25%, var(--accent-bg) 50%, var(--secondary-bg) 75%, var(--primary-bg) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease-in-out infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Enhanced Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            opacity: 0.6;
+        }
+        
+        .particle.blue { background: var(--primary-blue); width: 2px; height: 2px; }
+        .particle.green { background: var(--primary-green); width: 3px; height: 3px; }
+        .particle.purple { background: var(--primary-purple); width: 1px; height: 1px; }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100px) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* Success Particles */
+        .success-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: successBurst 1s ease-out forwards;
+        }
+        
+        @keyframes successBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(3) rotate(180deg); opacity: 0; }
+        }
+        
+        /* Modern card design */
+        .modern-card {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, transparent 50%, rgba(34, 197, 94, 0.05) 100%);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+        
+        /* Achievement Badge */
+        .achievement-badge {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 1000;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1f2937;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
+            animation: achievementPop 3s ease-out forwards;
+        }
+        
+        @keyframes achievementPop {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-180deg); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(180deg); opacity: 0; }
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes textShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        /* Modern button design */
+        .modern-button {
+            background: linear-gradient(135deg, #1e40af, var(--primary-blue));
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .modern-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .modern-button:hover::before {
+            left: 100%;
+        }
+        
+        .modern-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            border-color: var(--primary-green);
+        }
+        
+        .modern-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green), var(--primary-purple));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+            animation: progressPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes progressPulse {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* Timer styling */
+        .timer-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--primary-blue) 0%, var(--primary-green) 50%, #ef4444 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: timerPulse 1s ease-in-out infinite;
+        }
+        
+        .timer-circle::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: var(--primary-bg);
+        }
+        
+        .timer-text {
+            position: relative;
+            z-index: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary-blue);
+        }
+        
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .timer-warning {
+            animation: timerWarning 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes timerWarning {
+            0%, 100% { color: #ef4444; transform: scale(1); }
+            50% { color: #f87171; transform: scale(1.1); }
+        }
+        
+        /* Logo */
+        .seismic-logo {
+            width: 80px;
+            height: 80px;
+            background: conic-gradient(from 0deg, var(--primary-blue), var(--primary-green), var(--primary-purple), var(--primary-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: logoRotate 20s linear infinite;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .seismic-logo::before {
+            content: '🔐';
+            font-size: 32px;
+            animation: logoRotate 20s linear infinite reverse;
+        }
+        
+        /* Answer options */
+        .answer-option {
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .answer-option:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .answer-option:hover {
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(5px);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        .answer-option.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .answer-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--primary-green);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.3);
+        }
+        
+        .answer-option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Floating animation */
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Navigation buttons */
+        .nav-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--primary-blue), var(--primary-green));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav-button:hover::after {
+            opacity: 1;
+        }
+        
+        /* Typography */
+        .title-text {
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        /* Modal backdrop */
+        .modal-backdrop {
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Feature cards */
+        .feature-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Streak counter */
+        .streak-counter {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: streakPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes streakPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* XP Bar */
+        .xp-bar {
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .xp-fill {
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+            height: 100%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: xpShimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes xpShimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Explanation box */
+        .explanation-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 197, 94, 0.1));
+            border-left: 4px solid var(--primary-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        /* Difficulty badge */
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .difficulty-easy { background: rgba(34, 197, 94, 0.2); color: var(--primary-green); }
+        .difficulty-medium { background: rgba(251, 191, 36, 0.2); color: #f59e0b; }
+        .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
+        /* Leaderboard */
+        .leaderboard-entry {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-entry:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-blue);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .timer-circle { width: 60px; height: 60px; }
+            .timer-text { font-size: 18px; }
+            .seismic-logo { width: 60px; height: 60px; }
+            .seismic-logo::before { font-size: 24px; }
+        }
+        
+        /* Print styles */
+        @media print {
+            body { background: white; color: black; }
+            .particles, .modern-card::before, body::before { display: none; }
+            .modern-card { border: 1px solid #ccc; box-shadow: none; }
+        }
+        
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --border-color: #ffffff;
+                --text-secondary: #ffffff;
+            }
+        }
+        
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeIcon">🌙</span>
+    </div>
+
+    <!-- Achievement Badge (Hidden by default) -->
+    <div id="achievementBadge" class="achievement-badge" style="display: none;">
+        <div class="text-4xl mb-2" id="achievementIcon">🏆</div>
+        <div class="text-xl font-bold" id="achievementTitle">Achievement Unlocked!</div>
+        <div class="text-sm" id="achievementDesc">You're amazing!</div>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header class="modern-card p-6 m-4 rounded-3xl relative z-10">
+        <div class="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center space-x-6">
+                <div class="seismic-logo floating"></div>
+                <div>
+                    <h1 class="text-4xl font-black title-text tracking-wide">SEISMIC QUIZ</h1>
+                    <p class="text-blue-300 text-lg font-medium gradient-text">Ultimate Encrypted Blockchain Knowledge Test</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="flex items-center space-x-4 mb-2">
+                    <div class="text-white font-bold text-2xl">Score: <span id="score" class="text-blue-400">0</span></div>
+                    <div id="streakCounter" class="streak-counter hidden">🔥 <span id="streakCount">0</span></div>
+                </div>
+                <div class="flex items-center space-x-4 text-sm">
+                    <div class="text-gray-300">Best: <span id="bestScore" class="text-green-400">0</span></div>
+                    <div class="text-gray-300">Level: <span id="userLevel" class="text-purple-400">1</span></div>
+                    <div class="text-gray-300">XP: <span id="userXP" class="text-yellow-400">0</span></div>
+                </div>
+                <div class="xp-bar w-32 h-2 mt-2">
+                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Quiz Container -->
+    <main class="max-w-5xl mx-auto p-6 relative z-10">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="text-center py-16">
+            <div class="modern-card p-12 rounded-3xl mb-8 floating">
+                <h2 class="text-6xl font-black title-text mb-6">Welcome to Seismic Quiz!</h2>
+                <p class="text-gray-200 text-2xl mb-12 font-medium">Test your knowledge of encrypted blockchain technology and privacy-focused DeFi</p>
+                
+                <!-- Daily Challenge Banner -->
+                <div class="modern-card p-6 rounded-2xl mb-8 border-2 border-yellow-500/50">
+                    <div class="flex items-center justify-center space-x-4 mb-4">
+                        <span class="text-3xl">⭐</span>
+                        <h3 class="text-2xl font-bold text-yellow-400">Daily Challenge</h3>
+                        <span class="text-3xl">⭐</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">Complete today's challenge for bonus XP!</p>
+                    <div class="text-sm text-gray-400">Theme: <span class="text-blue-400" id="dailyTheme">Funding & Investment</span></div>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-6 mb-12">
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl mb-3">🔐</div>
+                        <div class="text-white font-bold text-lg">10 Questions</div>
+                        <div class="text-gray-300">Randomized selection</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl mb-3">⏱️</div>
+                        <div class="text-white font-bold text-lg">10 Sec Timer</div>
+                        <div class="text-gray-300">Fast-paced challenge</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <div class="text-white font-bold text-lg">Privacy Focus</div>
+                        <div class="text-gray-300">Layer 1 blockchain</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl mb-3">🏆</div>
+                        <div class="text-white font-bold text-lg">Achievements</div>
+                        <div class="text-gray-300">Unlock badges</div>
+                    </div>
+                </div>
+                
+                <!-- Quiz Mode Selection -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <button onclick="startQuiz('normal')" class="modern-button p-6 rounded-2xl text-left">
+                        <div class="text-2xl mb-2">🚀</div>
+                        <div class="text-xl font-bold mb-2">Normal Quiz</div>
+                        <div class="text-sm opacity-75">Standard 10-question quiz</div>
+                    </button>
+                    <button onclick="startQuiz('study')" class="modern-button p-6 rounded-2xl text-left">
+                        <div class="text-2xl mb-2">📚</div>
+                        <div class="text-xl font-bold mb-2">Study Mode</div>
+                        <div class="text-sm opacity-75">No timer, detailed explanations</div>
+                    </button>
+                    <button onclick="startQuiz('challenge')" class="modern-button p-6 rounded-2xl text-left">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <div class="text-xl font-bold mb-2">Daily Challenge</div>
+                        <div class="text-sm opacity-75">Special themed questions</div>
+                    </button>
+                </div>
+                
+                <!-- Quick Access Buttons -->
+                <div class="flex justify-center space-x-4 mb-8">
+                    <button onclick="showAchievements()" class="modern-button px-6 py-3 rounded-xl">
+                        🏆 Achievements
+                    </button>
+                    <button onclick="showLeaderboard()" class="modern-button px-6 py-3 rounded-xl">
+                        📊 Leaderboard
+                    </button>
+                    <button onclick="showAnalytics()" class="modern-button px-6 py-3 rounded-xl">
+                        📈 Analytics
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Interface -->
+        <div id="quizInterface" class="hidden">
+            <!-- Progress Bar and Timer -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-white font-bold text-xl">Progress</span>
+                        <div class="difficulty-badge" id="difficultyBadge">Easy</div>
+                        <div class="text-sm text-gray-400">Category: <span id="questionCategory">General</span></div>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="timer-circle" id="timerContainer">
+                            <div class="timer-text" id="timerText">10</div>
+                        </div>
+                        <span class="text-gray-200 text-xl" id="progressText">1 / 10</span>
+                    </div>
+                </div>
+                <div class="modern-card rounded-full p-2">
+                    <div class="progress-bar rounded-full h-4 transition-all duration-700" id="progressBar" style="width: 10%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="modern-card p-10 rounded-3xl mb-8 floating">
+                <div class="flex justify-between items-start mb-8">
+                    <h3 class="text-3xl font-bold text-white gradient-text">Question <span id="questionNumber">1</span></h3>
+                    <div class="flex space-x-4">
+                        <button onclick="toggleBookmark()" id="bookmarkBtn" class="text-blue-300 hover:text-blue-100 transition-colors text-2xl" title="Bookmark (B)">
+                            <span>☆</span>
+                        </button>
+                        <button onclick="showHint()" class="text-blue-300 hover:text-blue-100 transition-colors text-2xl" title="Hint (H)">
+                            <span>💡</span>
+                        </button>
+                        <button onclick="toggleFavorite()" id="favoriteBtn" class="text-blue-300 hover:text-blue-100 transition-colors text-2xl" title="Favorite (F)">
+                            <span>♡</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <p class="text-white text-2xl leading-relaxed font-medium" id="questionText">Loading question...</p>
+                </div>
+
+                <!-- Hint Box -->
+                <div id="hintBox" class="hidden modern-card border border-blue-500/50 rounded-2xl p-6 mb-8">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">💡</span>
+                        <span class="text-blue-200 font-bold text-xl">Hint:</span>
+                    </div>
+                    <p class="text-blue-300 text-lg" id="hintText"></p>
+                </div>
+
+                <!-- Answer Options -->
+                <div class="space-y-4" id="answerOptions">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+
+                <!-- Explanation Box (Hidden by default) -->
+                <div id="explanationBox" class="hidden explanation-box mt-6">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">📖</span>
+                        <span class="text-white font-bold text-xl">Explanation:</span>
+                    </div>
+                    <p class="text-gray-300" id="explanationText"></p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <button onclick="previousQuestion()" id="prevBtn" class="modern-button px-8 py-4 font-bold rounded-xl disabled:opacity-50 text-lg" disabled title="Previous (←)">
+                    ← Previous
+                </button>
+                
+                <div class="flex space-x-4">
+                    <button onclick="showQuestionNav()" class="modern-button px-6 py-4 font-bold rounded-xl text-lg" title="Questions (Q)">
+                        🔍 Questions
+                    </button>
+                    <button onclick="reviewAnswers()" class="modern-button px-6 py-4 font-bold rounded-xl text-lg" title="Review (R)">
+                        📊 Review
+                    </button>
+                </div>
+                
+                <button onclick="nextQuestion()" id="nextBtn" class="modern-button px-8 py-4 font-bold rounded-xl text-lg" title="Next (→)">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Navigation Modal -->
+        <div id="questionNavModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50">
+            <div class="modern-card p-8 rounded-3xl max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white gradient-text">Question Navigation</h3>
+                    <button onclick="closeQuestionNav()" class="text-blue-300 hover:text-blue-100 text-3xl">×</button>
+                </div>
+                <div class="grid grid-cols-5 gap-3" id="questionNavGrid">
+                    <!-- Navigation buttons will be populated by JavaScript -->
+                </div>
+                <div class="mt-6 flex justify-center space-x-6 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-green-500 rounded-lg"></div>
+                        <span class="text-gray-200">Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-blue-500 rounded-lg"></div>
+                        <span class="text-gray-200">Current</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-gray-500 rounded-lg"></div>
+                        <span class="text-gray-200">Unanswered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-yellow-500 rounded-lg"></div>
+                        <span class="text-gray-200">Bookmarked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Modal -->
+        <div id="achievementsModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50">
+            <div class="modern-card p-8 rounded-3xl max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white gradient-text">🏆 Achievements</h3>
+                    <button onclick="closeAchievements()" class="text-blue-300 hover:text-blue-100 text-3xl">×</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4" id="achievementsList">
+                    <!-- Achievements will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboardModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50">
+            <div class="modern-card p-8 rounded-3xl max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white gradient-text">📊 Leaderboard</h3>
+                    <button onclick="closeLeaderboard()" class="text-blue-300 hover:text-blue-100 text-3xl">×</button>
+                </div>
+                <div id="leaderboardList">
+                    <!-- Leaderboard will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Modal -->
+        <div id="analyticsModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50">
+            <div class="modern-card p-8 rounded-3xl max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white gradient-text">📈 Performance Analytics</h3>
+                    <button onclick="closeAnalytics()" class="text-blue-300 hover:text-blue-100 text-3xl">×</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <canvas id="performanceChart" width="300" height="200"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="categoryChart" width="300" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="mt-6 grid md:grid-cols-3 gap-4" id="analyticsStats">
+                    <!-- Stats will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden text-center py-16">
+            <div class="modern-card p-12 rounded-3xl floating">
+                <h2 class="text-6xl font-black title-text mb-8">Quiz Complete! 🏆</h2>
+                
+                <div class="grid md:grid-cols-4 gap-6 mb-12">
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl font-black text-blue-400" id="finalScore">0</div>
+                        <div class="text-gray-300 text-lg">Final Score</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl font-black text-green-400" id="correctAnswers">0</div>
+                        <div class="text-gray-300 text-lg">Correct Answers</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl font-black text-purple-400" id="accuracy">0%</div>
+                        <div class="text-gray-300 text-lg">Accuracy</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <div class="text-4xl font-black text-yellow-400" id="xpEarned">0</div>
+                        <div class="text-gray-300 text-lg">XP Earned</div>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <div class="text-4xl font-bold text-white mb-4 gradient-text" id="performanceMessage">Great job!</div>
+                    <div class="text-gray-300 text-xl" id="performanceDetails">You've completed the Seismic Quiz</div>
+                </div>
+
+                <!-- New Achievements -->
+                <div id="newAchievements" class="hidden mb-8">
+                    <h4 class="text-2xl font-bold text-yellow-400 mb-4">🎉 New Achievements Unlocked!</h4>
+                    <div class="flex justify-center space-x-4" id="newAchievementsList">
+                        <!-- New achievements will be shown here -->
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center space-y-6">
+                    <div class="flex justify-center space-x-6 flex-wrap gap-4">
+                        <button onclick="restartQuiz()" class="modern-button px-8 py-4 font-bold rounded-xl text-lg">
+                            🔄 Retake Quiz
+                        </button>
+                        <button onclick="reviewIncorrect()" class="modern-button px-8 py-4 font-bold rounded-xl text-lg">
+                            📊 Review Mistakes
+                        </button>
+                        <button onclick="printCertificate()" class="modern-button px-8 py-4 font-bold rounded-xl text-lg">
+                            🖨️ Print Certificate
+                        </button>
+                    </div>
+                    
+                    <!-- Social Media Sharing -->
+                    <div class="modern-card p-6 rounded-2xl border border-blue-500/30">
+                        <h4 class="text-xl font-bold text-white mb-4 text-center">Share Your Achievement!</h4>
+                        <div class="flex justify-center space-x-4 flex-wrap gap-2">
+                            <button onclick="shareOnTwitter()" class="modern-button px-6 py-3 font-bold rounded-xl text-sm">
+                                🐦 Twitter
+                            </button>
+                            <button onclick="shareOnLinkedIn()" class="modern-button px-6 py-3 font-bold rounded-xl text-sm">
+                                💼 LinkedIn
+                            </button>
+                            <button onclick="copyShareLink()" class="modern-button px-6 py-3 font-bold rounded-xl text-sm">
+                                🔗 Copy Link
+                            </button>
+                            <button onclick="challengeFriend()" class="modern-button px-6 py-3 font-bold rounded-xl text-sm">
+                                ⚔️ Challenge Friend
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Enhanced questions with categories, difficulty, and explanations
+        const questions = [
+            {
+                question: "What is the primary focus of Seismic, the project behind @SeismicSys?",
+                options: ["Gaming NFTs", "Encrypted blockchain for privacy in DeFi", "Decentralized social media", "Centralized cloud storage"],
+                correct: 1,
+                hint: "Think about privacy and financial applications.",
+                explanation: "Seismic is specifically designed as an encrypted blockchain that enables privacy in decentralized finance (DeFi) applications, allowing for confidential transactions and smart contracts.",
+                category: "General",
+                difficulty: "easy"
+            },
+            {
+                question: "When was Seismic officially introduced via a video announcement on X?",
+                options: ["January 2025", "April 2025", "February 18, 2025", "June 2025"],
+                correct: 2,
+                hint: "It was announced in the second month of 2025.",
+                explanation: "Seismic was officially announced on February 18, 2025, marking the public introduction of their encrypted blockchain project.",
+                category: "Timeline",
+                difficulty: "medium"
+            },
+            {
+                question: "What is the tagline or core description of Seismic as per their X bio?",
+                options: ["An encrypted blockchain", "A fast Layer 2 solution", "The future of NFTs", "Blockchain for artists"],
+                correct: 0,
+                hint: "Focus on the privacy aspect of their technology.",
+                explanation: "Seismic describes itself as 'an encrypted blockchain' in their social media bio, emphasizing their core focus on privacy and encryption technology.",
+                category: "General",
+                difficulty: "easy"
+            },
+            {
+                question: "How much funding did Seismic raise in their seed round announced on March 6, 2025?",
+                options: ["$15M", "$7M", "$5M", "$10M"],
+                correct: 1,
+                hint: "It's a single-digit million dollar amount.",
+                explanation: "Seismic successfully raised $7 million in their seed funding round, which was announced on March 6, 2025, to support the development of their encrypted blockchain.",
+                category: "Funding",
+                difficulty: "medium"
+            },
+            {
+                question: "Who led the $7M funding round for Seismic?",
+                options: ["a16z crypto", "Polychain Capital", "Alliance DAO", "1kx"],
+                correct: 0,
+                hint: "It's one of the most prominent crypto venture firms.",
+                explanation: "a16z crypto (Andreessen Horowitz crypto) led Seismic's $7M seed round, bringing their expertise in blockchain investments to support the project.",
+                category: "Funding",
+                difficulty: "medium"
+            },
+            {
+                question: "What is the name of the consensus client open-sourced by Seismic on July 24, 2025?",
+                options: ["Ridge", "Summit", "Alpine", "Peak"],
+                correct: 1,
+                hint: "It's named after the highest point of a mountain.",
+                explanation: "Summit is Seismic's consensus client that was open-sourced on July 24, 2025. It's designed to be a turnkey, fast consensus engine with sub-second block times for EVM blockchains.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "What execution client does Seismic's Summit consensus client plug into?",
+                options: ["Geth", "Nethermind", "Reth", "Erigon"],
+                correct: 2,
+                hint: "It's a Rust-based Ethereum execution client.",
+                explanation: "Summit plugs into Reth, which is a Rust-based Ethereum execution client known for its performance and efficiency.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "According to a July 17, 2025, post, why encrypt blockchains like Seismic?",
+                options: ["To add more memes", "To support core financial services like loans and insurance", "To increase transaction speed only", "To reduce gas fees exclusively"],
+                correct: 1,
+                hint: "Think about traditional financial services that need privacy.",
+                explanation: "Encryption in blockchains like Seismic is essential for supporting core financial services such as loans and insurance, where privacy and confidentiality are crucial for real-world adoption.",
+                category: "Technology",
+                difficulty: "medium"
+            },
+            {
+                question: "What key feature did @SFYLL build into the Solidity compiler for Seismic?",
+                options: ["Automatic yield optimization", "Encrypted types as first-class citizens", "Faster compilation", "Built-in NFT minting"],
+                correct: 1,
+                hint: "It relates to privacy features being built directly into the language.",
+                explanation: "The integration of encrypted types as first-class citizens in Solidity allows developers to write encrypted contracts natively without requiring external libraries, making privacy development more accessible.",
+                category: "Technology",
+                difficulty: "hard"
+            },
+            {
+                question: "How many encrypted contracts were deployed during Seismic's beta phase?",
+                options: ["10,000+", "3,000+", "1,000+", "5,000+"],
+                correct: 1,
+                hint: "It's in the thousands, specifically in the 3K range.",
+                explanation: "During Seismic's beta phase, over 3,000 encrypted contracts were deployed, demonstrating significant developer interest and testing of the platform's capabilities.",
+                category: "Timeline",
+                difficulty: "medium"
+            }
+        ];
+
+        // Enhanced quiz state
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        let bookmarkedQuestions = new Set();
+        let favoriteQuestions = new Set();
+        let timeStarted = null;
+        let currentQuizQuestions = [];
+        let timer = null;
+        let timeLeft = 10;
+        let quizMode = 'normal';
+        let streak = 0;
+        let maxStreak = 0;
+        let userXP = parseInt(localStorage.getItem('seismicXP') || '0');
+        let userLevel = Math.floor(userXP / 100) + 1;
+        let questionTimes = [];
+        let currentTheme = localStorage.getItem('seismicTheme') || 'dark';
+
+        // Achievement system
+        const achievements = {
+            firstQuiz: { name: "First Steps", desc: "Complete your first quiz", icon: "🎯", unlocked: false },
+            perfectScore: { name: "Perfectionist", desc: "Score 100% on a quiz", icon: "💯", unlocked: false },
+            speedDemon: { name: "Speed Demon", desc: "Answer 5 questions in under 3 seconds each", icon: "⚡", unlocked: false },
+            streakMaster: { name: "Streak Master", desc: "Get 5 correct answers in a row", icon: "🔥", unlocked: false },
+            bookworm: { name: "Bookworm", desc: "Use hints on 10 questions", icon: "📚", unlocked: false },
+            explorer: { name: "Explorer", desc: "Try all quiz modes", icon: "🗺️", unlocked: false },
+            dedicated: { name: "Dedicated", desc: "Complete 10 quizzes", icon: "🏆", unlocked: false },
+            scholar: { name: "Scholar", desc: "Reach level 5", icon: "🎓", unlocked: false }
+        };
+
+        // Load saved achievements
+        const savedAchievements = JSON.parse(localStorage.getItem('seismicAchievements') || '{}');
+        Object.keys(savedAchievements).forEach(key => {
+            if (achievements[key]) {
+                achievements[key].unlocked = savedAchievements[key];
+            }
+        });
+
+        // Enhanced particle system
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleTypes = ['blue', 'green', 'purple'];
+            
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                particle.className = `particle ${type}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Success particle burst
+        function createSuccessParticles(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'success-particle';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.transform = `rotate(${i * 30}deg) translateX(${Math.random() * 50 + 20}px)`;
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('seismicTheme', currentTheme);
+        }
+
+        // Initialize theme
+        function initializeTheme() {
+            document.body.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // XP and leveling system
+        function addXP(amount) {
+            userXP += amount;
+            const newLevel = Math.floor(userXP / 100) + 1;
+            
+            if (newLevel > userLevel) {
+                userLevel = newLevel;
+                showAchievement("Level Up!", `You reached level ${userLevel}!`, "🆙");
+                
+                if (userLevel >= 5) {
+                    unlockAchievement('scholar');
+                }
+            }
+            
+            updateXPDisplay();
+            localStorage.setItem('seismicXP', userXP.toString());
+        }
+
+        function updateXPDisplay() {
+            document.getElementById('userXP').textContent = userXP;
+            document.getElementById('userLevel').textContent = userLevel;
+            
+            const currentLevelXP = (userLevel - 1) * 100;
+            const nextLevelXP = userLevel * 100;
+            const progress = ((userXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+            
+            document.getElementById('xpFill').style.width = progress + '%';
+        }
+
+        // Achievement system
+        function unlockAchievement(achievementKey) {
+            if (!achievements[achievementKey].unlocked) {
+                achievements[achievementKey].unlocked = true;
+                showAchievement(
+                    achievements[achievementKey].name,
+                    achievements[achievementKey].desc,
+                    achievements[achievementKey].icon
+                );
+                saveAchievements();
+                addXP(50); // Bonus XP for achievements
+            }
+        }
+
+        function showAchievement(title, desc, icon) {
+            const badge = document.getElementById('achievementBadge');
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementDesc').textContent = desc;
+            document.getElementById('achievementIcon').textContent = icon;
+            
+            badge.style.display = 'block';
+            setTimeout(() => {
+                badge.style.display = 'none';
+            }, 3000);
+        }
+
+        function saveAchievements() {
+            const achievementData = {};
+            Object.keys(achievements).forEach(key => {
+                achievementData[key] = achievements[key].unlocked;
+            });
+            localStorage.setItem('seismicAchievements', JSON.stringify(achievementData));
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('quizInterface').classList.contains('hidden')) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'a':
+                case '1':
+                    selectAnswerByIndex(0);
+                    break;
+                case 'b':
+                case '2':
+                    selectAnswerByIndex(1);
+                    break;
+                case 'c':
+                case '3':
+                    selectAnswerByIndex(2);
+                    break;
+                case 'd':
+                case '4':
+                    selectAnswerByIndex(3);
+                    break;
+                case 'arrowleft':
+                    previousQuestion();
+                    break;
+                case 'arrowright':
+                case ' ':
+                    e.preventDefault();
+                    nextQuestion();
+                    break;
+                case 'h':
+                    showHint();
+                    break;
+                case 'b':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        toggleBookmark();
+                    }
+                    break;
+                case 'f':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        toggleFavorite();
+                    }
+                    break;
+                case 'q':
+                    showQuestionNav();
+                    break;
+                case 'r':
+                    reviewAnswers();
+                    break;
+            }
+        });
+
+        function selectAnswerByIndex(index) {
+            const options = document.querySelectorAll('#answerOptions button');
+            if (options[index]) {
+                options[index].click();
+            }
+        }
+
+        // Enhanced quiz functions
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function selectRandomQuestions() {
+            let selectedQuestions;
+            
+            if (quizMode === 'challenge') {
+                // Daily challenge - filter by today's theme
+                const dailyTheme = getDailyTheme();
+                selectedQuestions = questions.filter(q => q.category === dailyTheme);
+                if (selectedQuestions.length < 10) {
+                    selectedQuestions = [...selectedQuestions, ...questions.filter(q => q.category !== dailyTheme)];
+                }
+            } else {
+                selectedQuestions = [...questions];
+            }
+            
+            const shuffled = shuffleArray(selectedQuestions);
+            const selected = shuffled.slice(0, 10);
+            
+            return selected.map(question => {
+                const originalOptions = [...question.options];
+                const correctAnswer = originalOptions[question.correct];
+                
+                const indices = [0, 1, 2, 3];
+                const shuffledIndices = shuffleArray(indices);
+                const shuffledOptions = shuffledIndices.map(index => originalOptions[index]);
+                const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+                
+                return {
+                    ...question,
+                    options: shuffledOptions,
+                    correct: newCorrectIndex
+                };
+            });
+        }
+
+        function getDailyTheme() {
+            const themes = ['General', 'Funding', 'Technology', 'Timeline'];
+            const today = new Date().getDate();
+            return themes[today % themes.length];
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (quizMode === 'study') return; // No timer in study mode
+            
+            timeLeft = 10;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 3) {
+                    document.getElementById('timerText').classList.add('timer-warning');
+                } else {
+                    document.getElementById('timerText').classList.remove('timer-warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    autoAdvanceQuestion();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timerText').textContent = timeLeft;
+        }
+
+        function stopTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function autoAdvanceQuestion() {
+            if (answers[currentQuestion] === undefined) {
+                answers[currentQuestion] = 0;
+                streak = 0; // Reset streak on timeout
+                updateStreakDisplay();
+            }
+            nextQuestion();
+        }
+
+        // Streak system
+        function updateStreakDisplay() {
+            const streakCounter = document.getElementById('streakCounter');
+            const streakCount = document.getElementById('streakCount');
+            
+            if (streak > 0) {
+                streakCounter.classList.remove('hidden');
+                streakCount.textContent = streak;
+            } else {
+                streakCounter.classList.add('hidden');
+            }
+            
+            if (streak > maxStreak) {
+                maxStreak = streak;
+            }
+            
+            if (streak >= 5) {
+                unlockAchievement('streakMaster');
+            }
+        }
+
+        // Enhanced quiz initialization
+        function startQuiz(mode = 'normal') {
+            quizMode = mode;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('quizInterface').classList.remove('hidden');
+            
+            // Hide timer in study mode
+            if (mode === 'study') {
+                document.getElementById('timerContainer').style.display = 'none';
+            } else {
+                document.getElementById('timerContainer').style.display = 'flex';
+            }
+            
+            currentQuizQuestions = selectRandomQuestions();
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            bookmarkedQuestions.clear();
+            favoriteQuestions.clear();
+            timeStarted = new Date();
+            questionTimes = [];
+            streak = 0;
+            
+            loadQuestion();
+            updateProgress();
+            updateStreakDisplay();
+            
+            if (mode !== 'study') {
+                startTimer();
+            }
+            
+            // Update daily theme display
+            document.getElementById('dailyTheme').textContent = getDailyTheme();
+        }
+
+        function loadQuestion() {
+            const question = currentQuizQuestions[currentQuestion];
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('questionCategory').textContent = question.category;
+            
+            // Set difficulty badge
+            const difficultyBadge = document.getElementById('difficultyBadge');
+            difficultyBadge.textContent = question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1);
+            difficultyBadge.className = `difficulty-badge difficulty-${question.difficulty}`;
+            
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-option w-full text-left p-6 rounded-2xl transition-all duration-300';
+                button.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-12 h-12 rounded-full border-2 border-blue-400 flex items-center justify-center mr-6 text-lg font-bold text-blue-300">
+                            ${String.fromCharCode(65 + index)}
+                        </span>
+                        <span class="text-white text-lg font-medium">${option}</span>
+                    </div>
+                `;
+                
+                if (answers[currentQuestion] === index) {
+                    button.classList.add('selected');
+                }
+                
+                button.onclick = () => selectAnswer(index, button);
+                optionsContainer.appendChild(button);
+            });
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === 9 ? 'Finish Quiz' : 'Next →';
+            
+            // Update bookmark and favorite buttons
+            const bookmarkBtn = document.getElementById('bookmarkBtn');
+            bookmarkBtn.innerHTML = bookmarkedQuestions.has(currentQuestion) ? '<span>★</span>' : '<span>☆</span>';
+            
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            favoriteBtn.innerHTML = favoriteQuestions.has(currentQuestion) ? '<span>♥</span>' : '<span>♡</span>';
+            
+            // Hide hint and explanation
+            document.getElementById('hintBox').classList.add('hidden');
+            document.getElementById('explanationBox').classList.add('hidden');
+            
+            // Record question start time
+            questionTimes[currentQuestion] = { start: Date.now() };
+            
+            // Start timer for new question
+            stopTimer();
+            if (quizMode !== 'study') {
+                startTimer();
+            }
+        }
+
+        function selectAnswer(answerIndex, buttonElement) {
+            const questionStartTime = questionTimes[currentQuestion].start;
+            const answerTime = (Date.now() - questionStartTime) / 1000;
+            questionTimes[currentQuestion].time = answerTime;
+            
+            stopTimer();
+            
+            // Remove previous selection styling
+            document.querySelectorAll('#answerOptions button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selection styling
+            buttonElement.classList.add('selected');
+            
+            // Store answer
+            const previousAnswer = answers[currentQuestion];
+            answers[currentQuestion] = answerIndex;
+            const isCorrect = answerIndex === currentQuizQuestions[currentQuestion].correct;
+            
+            // Update score and streak
+            if (isCorrect && previousAnswer !== answerIndex) {
+                score += 10;
+                streak++;
+                createSuccessParticles(buttonElement);
+                addXP(10);
+                
+                // Speed bonus
+                if (answerTime < 3) {
+                    addXP(5);
+                    const fastAnswers = questionTimes.filter(q => q.time && q.time < 3).length;
+                    if (fastAnswers >= 5) {
+                        unlockAchievement('speedDemon');
+                    }
+                }
+            } else if (previousAnswer === currentQuizQuestions[currentQuestion].correct && !isCorrect) {
+                score -= 10;
+                streak = 0;
+            } else if (!isCorrect) {
+                streak = 0;
+            }
+            
+            updateScore();
+            updateStreakDisplay();
+            
+            // Show explanation in study mode or after answering
+            if (quizMode === 'study' || true) {
+                showExplanation();
+            }
+        }
+
+        function showExplanation() {
+            const explanationBox = document.getElementById('explanationBox');
+            const explanationText = document.getElementById('explanationText');
+            explanationText.textContent = currentQuizQuestions[currentQuestion].explanation;
+            explanationBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            stopTimer();
+            if (currentQuestion < 9) {
+                currentQuestion++;
+                loadQuestion();
+                updateProgress();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            stopTimer();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 10) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentQuestion + 1} / 10`;
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function toggleBookmark() {
+            if (bookmarkedQuestions.has(currentQuestion)) {
+                bookmarkedQuestions.delete(currentQuestion);
+            } else {
+                bookmarkedQuestions.add(currentQuestion);
+            }
+            
+            const bookmarkBtn = document.getElementById('bookmarkBtn');
+            bookmarkBtn.innerHTML = bookmarkedQuestions.has(currentQuestion) ? '<span>★</span>' : '<span>☆</span>';
+        }
+
+        function toggleFavorite() {
+            if (favoriteQuestions.has(currentQuestion)) {
+                favoriteQuestions.delete(currentQuestion);
+            } else {
+                favoriteQuestions.add(currentQuestion);
+            }
+            
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            favoriteBtn.innerHTML = favoriteQuestions.has(currentQuestion) ? '<span>♥</span>' : '<span>♡</span>';
+        }
+
+        function showHint() {
+            const hintBox = document.getElementById('hintBox');
+            const hintText = document.getElementById('hintText');
+            hintText.textContent = currentQuizQuestions[currentQuestion].hint;
+            hintBox.classList.remove('hidden');
+            
+            // Track hint usage for achievement
+            const hintsUsed = parseInt(localStorage.getItem('seismicHintsUsed') || '0') + 1;
+            localStorage.setItem('seismicHintsUsed', hintsUsed.toString());
+            
+            if (hintsUsed >= 10) {
+                unlockAchievement('bookworm');
+            }
+        }
+
+        // Modal functions
+        function showQuestionNav() {
+            const modal = document.getElementById('questionNavModal');
+            const grid = document.getElementById('questionNavGrid');
+            
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.className = 'nav-button w-12 h-12 rounded-xl font-bold text-white transition-all duration-200';
+                
+                if (i === currentQuestion) {
+                    button.className += ' bg-blue-600 hover:bg-blue-700';
+                } else if (answers[i] !== undefined) {
+                    button.className += ' bg-green-600 hover:bg-green-700';
+                } else {
+                    button.className += ' bg-gray-600 hover:bg-gray-700';
+                }
+                
+                if (bookmarkedQuestions.has(i)) {
+                    button.className += ' ring-2 ring-yellow-400';
+                }
+                
+                button.onclick = () => {
+                    stopTimer();
+                    currentQuestion = i;
+                    loadQuestion();
+                    updateProgress();
+                    closeQuestionNav();
+                };
+                
+                grid.appendChild(button);
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeQuestionNav() {
+            document.getElementById('questionNavModal').classList.add('hidden');
+        }
+
+        function showAchievements() {
+            const modal = document.getElementById('achievementsModal');
+            const list = document.getElementById('achievementsList');
+            
+            list.innerHTML = '';
+            
+            Object.entries(achievements).forEach(([key, achievement]) => {
+                const div = document.createElement('div');
+                div.className = `feature-card p-4 rounded-xl ${achievement.unlocked ? 'border-green-500' : 'border-gray-600'}`;
+                div.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-3xl ${achievement.unlocked ? '' : 'grayscale opacity-50'}">${achievement.icon}</div>
+                        <div>
+                            <div class="font-bold text-white">${achievement.name}</div>
+                            <div class="text-sm text-gray-300">${achievement.desc}</div>
+                            <div class="text-xs ${achievement.unlocked ? 'text-green-400' : 'text-gray-500'}">
+                                ${achievement.unlocked ? 'Unlocked!' : 'Locked'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeAchievements() {
+            document.getElementById('achievementsModal').classList.add('hidden');
+        }
+
+        function showLeaderboard() {
+            const modal = document.getElementById('leaderboardModal');
+            const list = document.getElementById('leaderboardList');
+            
+            // Simulated leaderboard data
+            const leaderboardData = [
+                { name: "CryptoMaster", score: 100, level: 8 },
+                { name: "BlockchainPro", score: 95, level: 7 },
+                { name: "DeFiExpert", score: 90, level: 6 },
+                { name: "You", score: parseInt(localStorage.getItem('seismicBestScore') || '0'), level: userLevel },
+                { name: "PrivacyFan", score: 85, level: 5 },
+            ];
+            
+            // Sort by score
+            leaderboardData.sort((a, b) => b.score - a.score);
+            
+            list.innerHTML = '';
+            
+            leaderboardData.forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.className = `leaderboard-entry ${entry.name === 'You' ? 'border-blue-500' : ''}`;
+                div.innerHTML = `
+                    <div class="text-2xl font-bold text-gray-400 mr-4">#${index + 1}</div>
+                    <div class="flex-1">
+                        <div class="font-bold text-white">${entry.name}</div>
+                        <div class="text-sm text-gray-300">Level ${entry.level}</div>
+                    </div>
+                    <div class="text-xl font-bold text-blue-400">${entry.score}</div>
+                `;
+                list.appendChild(div);
+            });
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboardModal').classList.add('hidden');
+        }
+
+        function showAnalytics() {
+            const modal = document.getElementById('analyticsModal');
+            
+            // Create performance chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Quiz 1', 'Quiz 2', 'Quiz 3', 'Quiz 4', 'Quiz 5'],
+                    datasets: [{
+                        label: 'Score',
+                        data: [60, 70, 85, 90, 95],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Over Time',
+                            color: '#ffffff'
+                        },
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Create category chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['General', 'Funding', 'Technology', 'Timeline'],
+                    datasets: [{
+                        data: [85, 90, 75, 80],
+                        backgroundColor: ['#3b82f6', '#22c55e', '#a855f7', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance by Category',
+                            color: '#ffffff'
+                        },
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update stats
+            const statsContainer = document.getElementById('analyticsStats');
+            statsContainer.innerHTML = `
+                <div class="feature-card p-4 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-blue-400">${questionTimes.filter(q => q.time && q.time < 5).length}</div>
+                    <div class="text-sm text-gray-300">Fast Answers</div>
+                </div>
+                <div class="feature-card p-4 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-green-400">${maxStreak}</div>
+                    <div class="text-sm text-gray-300">Best Streak</div>
+                </div>
+                <div class="feature-card p-4 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-purple-400">${questionTimes.length > 0 ? (questionTimes.reduce((sum, q) => sum + (q.time || 0), 0) / questionTimes.length).toFixed(1) : 0}s</div>
+                    <div class="text-sm text-gray-300">Avg Time</div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeAnalytics() {
+            document.getElementById('analyticsModal').classList.add('hidden');
+        }
+
+        function reviewAnswers() {
+            // This would show a detailed review of all answers
+            alert('Review feature would show all questions with your answers, correct answers, and explanations.');
+        }
+
+        function finishQuiz() {
+            stopTimer();
+            
+            // Calculate results
+            let correctCount = 0;
+            answers.forEach((answer, index) => {
+                if (answer === currentQuizQuestions[index].correct) {
+                    correctCount++;
+                }
+            });
+            
+            const accuracy = Math.round((correctCount / 10) * 100);
+            const finalScore = correctCount * 10;
+            const xpEarned = finalScore + (streak * 5);
+            
+            // Update best score
+            const bestScore = localStorage.getItem('seismicQuizBest') || 0;
+            if (finalScore > bestScore) {
+                localStorage.setItem('seismicQuizBest', finalScore);
+                document.getElementById('bestScore').textContent = finalScore;
+            }
+            
+            // Add XP
+            addXP(xpEarned);
+            
+            // Check achievements
+            if (accuracy === 100) {
+                unlockAchievement('perfectScore');
+            }
+            
+            const quizzesCompleted = parseInt(localStorage.getItem('seismicQuizzesCompleted') || '0') + 1;
+            localStorage.setItem('seismicQuizzesCompleted', quizzesCompleted.toString());
+            
+            if (quizzesCompleted === 1) {
+                unlockAchievement('firstQuiz');
+            }
+            
+            if (quizzesCompleted >= 10) {
+                unlockAchievement('dedicated');
+            }
+            
+            // Show results
+            document.getElementById('quizInterface').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = finalScore;
+            document.getElementById('correctAnswers').textContent = `${correctCount} / 10`;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('xpEarned').textContent = xpEarned;
+            
+            // Performance message
+            let message, details;
+            if (accuracy >= 90) {
+                message = "Outstanding! 🏆";
+                details = "You're a Seismic privacy expert!";
+            } else if (accuracy >= 80) {
+                message = "Excellent work! 🌟";
+                details = "Great understanding of encrypted blockchain!";
+            } else if (accuracy >= 70) {
+                message = "Good job! 👍";
+                details = "Solid Layer 1 knowledge!";
+            } else if (accuracy >= 60) {
+                message = "Not bad! 📚";
+                details = "Keep studying privacy tech!";
+            } else {
+                message = "Keep learning! 💪";
+                details = "Practice makes perfect!";
+            }
+            
+            document.getElementById('performanceMessage').textContent = message;
+            document.getElementById('performanceDetails').textContent = details;
+        }
+
+        function restartQuiz() {
+            stopTimer();
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            bookmarkedQuestions.clear();
+            favoriteQuestions.clear();
+            currentQuizQuestions = [];
+            streak = 0;
+            questionTimes = [];
+            
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+            
+            updateScore();
+            updateStreakDisplay();
+        }
+
+        function reviewIncorrect() {
+            alert('Review incorrect answers feature would show detailed explanations for missed questions with the correct answers highlighted.');
+        }
+
+        function printCertificate() {
+            const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
+            const accuracy = Math.round((correctCount / 10) * 100);
+            
+            const certificateContent = `
+                <div style="text-align: center; padding: 2rem; font-family: Arial, sans-serif;">
+                    <h1 style="color: #3b82f6; font-size: 2rem; margin-bottom: 1rem;">🏆 Certificate of Completion</h1>
+                    <h2 style="color: #1f2937; font-size: 1.5rem; margin-bottom: 2rem;">Seismic Privacy Quiz</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 1rem;">This certifies that you have successfully completed</p>
+                    <p style="font-size: 1.2rem; margin-bottom: 1rem;">the Seismic Encrypted Blockchain Knowledge Test</p>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 2rem 0;">Score: ${correctCount}/10 (${accuracy}%)</p>
+                    <p style="font-size: 1rem; color: #6b7280;">Level: ${userLevel} | XP: ${userXP}</p>
+                    <p style="font-size: 0.9rem; color: #6b7280; margin-top: 2rem;">Date: ${new Date().toLocaleDateString()}</p>
+                </div>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(certificateContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Social sharing functions
+        function shareOnTwitter() {
+            const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
+            const accuracy = Math.round((correctCount / 10) * 100);
+            const text = `I just scored ${correctCount}/10 (${accuracy}%) on the Seismic Privacy Quiz! 🔐 Level ${userLevel} with ${userXP} XP. Test your knowledge of encrypted blockchain technology! #Seismic #Privacy #Blockchain #DeFi`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        function shareOnLinkedIn() {
+            const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
+            const accuracy = Math.round((correctCount / 10) * 100);
+            const text = `I just completed the Seismic Privacy Quiz and scored ${correctCount}/10 (${accuracy}%)! Great way to test knowledge about encrypted blockchain technology and Layer 1 privacy solutions. Currently at Level ${userLevel}!`;
+            const url = window.location.href;
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function copyShareLink() {
+            const correctCount = answers.filter((answer, index) => answer === currentQuizQuestions[index].correct).length;
+            const accuracy = Math.round((correctCount / 10) * 100);
+            const text = `Check out this Seismic Privacy Quiz! I scored ${correctCount}/10 (${accuracy}%) and reached Level ${userLevel}. Test your knowledge: ${window.location.href}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Share link copied to clipboard! 📋');
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Share link copied to clipboard! 📋');
+            }
+        }
+
+        function challengeFriend() {
+            const challengeText = `I challenge you to beat my score on the Seismic Privacy Quiz! I got ${score} points. Think you can do better? ${window.location.href}`;
+            copyShareLink();
+            alert('Challenge link copied! Send it to your friends! ⚔️');
+        }
+
+        // Auto-save progress
+        function saveProgress() {
+            const progress = {
+                currentQuestion,
+                answers,
+                score,
+                streak,
+                bookmarkedQuestions: Array.from(bookmarkedQuestions),
+                favoriteQuestions: Array.from(favoriteQuestions),
+                quizMode,
+                timeStarted
+            };
+            localStorage.setItem('seismicQuizProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('seismicQuizProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                // Only load if quiz was started recently (within 1 hour)
+                if (progress.timeStarted && (Date.now() - new Date(progress.timeStarted).getTime()) < 3600000) {
+                    return progress;
+                }
+            }
+            return null;
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            createParticles();
+            initializeTheme();
+            updateXPDisplay();
+            
+            const bestScore = localStorage.getItem('seismicQuizBest') || 0;
+            document.getElementById('bestScore').textContent = bestScore;
+            
+            // Set daily theme
+            document.getElementById('dailyTheme').textContent = getDailyTheme();
+            
+            // Load progress if available
+            const savedProgress = loadProgress();
+            if (savedProgress && confirm('Resume your previous quiz?')) {
+                // Restore progress
+                currentQuestion = savedProgress.currentQuestion;
+                answers = savedProgress.answers;
+                score = savedProgress.score;
+                streak = savedProgress.streak;
+                bookmarkedQuestions = new Set(savedProgress.bookmarkedQuestions);
+                favoriteQuestions = new Set(savedProgress.favoriteQuestions);
+                quizMode = savedProgress.quizMode;
+                
+                startQuiz(quizMode);
+            }
+        };
+
+        // Auto-save every 30 seconds during quiz
+        setInterval(() => {
+            if (!document.getElementById('quizInterface').classList.contains('hidden')) {
+                saveProgress();
+            }
+        }, 30000);
+
+        // Close modals when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-backdrop')) {
+                e.target.classList.add('hidden');
+            }
+        });
+
+        // Offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {
+                // Service worker registration failed, but app still works
+            });
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bbc674f031a7bb',t:'MTc1NzMwNjUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
